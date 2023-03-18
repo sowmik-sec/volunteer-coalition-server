@@ -5,9 +5,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 
-// user: volunteerAdmin
-// pass: B7xOeWYGYM7rbGyi
-
 // middle wares
 app.use(cors());
 app.use(express.json());
