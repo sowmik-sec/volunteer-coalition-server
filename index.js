@@ -41,6 +41,12 @@ const run = async () => {
       const services = await cursor.toArray();
       res.send(services);
     });
+    app.get("/events", async (req, res) => {
+      const query = {};
+      const cursor = eventCollection.find(query);
+      const events = await cursor.toArray();
+      res.send(events);
+    });
     app.post("/events", upload.single("file"), async (req, res) => {
       const { title, datepicker, description } = req.body;
       const filename = req.file.originalname;
