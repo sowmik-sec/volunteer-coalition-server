@@ -55,6 +55,33 @@ const run = async () => {
       res.send(event);
     });
 
+    app.get("/events/img/:id", async (req, res) => {
+      try {
+        const db = await MongoClient.connect();
+        const file = await db
+          .collection("events")
+          .findOne({ _id: new mongodb.ObjectId(req.params.id) });
+        if (!file) {
+          res.sendStatus(404);
+          return;
+        }
+        res.setHeader("Content-Type", file.contentType);
+        const stream = db
+          .collection("fs.files")
+          .find({ _id: file._id })
+          .stream();
+        stream.on("data", (chunk) => {
+          res.write(chunk.data.buffer);
+        });
+        stream.on("end", () => {
+          res.end();
+        });
+      } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+      }
+    });
+
     app.post("/events", upload.single("file"), async (req, res) => {
       const { title, datepicker, description } = req.body;
       const filename = req.file.originalname;
@@ -106,5 +133,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Genius car server is listening on port ${port}`);
+  console.log(`Volunteer coalition server is listening on port ${port}`);
 });
