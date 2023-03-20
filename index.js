@@ -1,8 +1,9 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const multer = require("multer");
 const { Readable } = require("stream");
 const GridFSBucket = require("mongodb").GridFSBucket;
+// const { ObjectID } = require("mongodb");
 const ObjectID = require("mongodb").ObjectID;
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -47,6 +48,13 @@ const run = async () => {
       const events = await cursor.toArray();
       res.send(events);
     });
+    app.get("/events/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const event = await eventCollection.findOne(query);
+      res.send(event);
+    });
+
     app.post("/events", upload.single("file"), async (req, res) => {
       const { title, datepicker, description } = req.body;
       const filename = req.file.originalname;
