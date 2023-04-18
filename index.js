@@ -79,6 +79,7 @@ const run = async () => {
       } catch (err) {
         console.error(err);
         res.sendStatus(500);
+      } finally {
       }
     });
 
